@@ -43,7 +43,7 @@ $user_input = isset($_SESSION['user_input']) ? (int)$_SESSION['user_input'] : ''
     <div class = "container" style = "margin-top: 20vh;">
         <h1 class = "text-center">Single use unique key generator</h1>
         <p class = "text-center">A sudo-random passkey generator for administrative purposes. Keys will automatically terminate prior to use.</p>
-        <p class = "text-center" style = "font-style: italic;">Formula: Key = Time * (Temperature^((Input + 3) % 5) + Input^2) % 10^7</p>
+        <p class = "text-center" style = "font-style: italic;">Formula: Key = Time * (Temperature + Input)^2 % 10^6</p>
         <form method = "post">
             <div class = "text-center">
                 <div class = "row" style = "margin-top: 40px;">
