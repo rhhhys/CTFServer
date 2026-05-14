@@ -2,9 +2,10 @@
 ob_start();
 require_once "../../includes/template.php";
 
-$temperature = 1; // default
+$temperature = 10; // default
 $message = "";
 $auth_attempted = false;
+$time = date("dHis");
 
 if (!isset($_SESSION['verified'])) {
     $_SESSION['verified'] = false;
@@ -20,16 +21,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $message = "Incorrect password. Please try again or contact an administrator for help";
         }  
     }
-    // $temperature = random_int(10, 30); // placeholder
+
+    if (!$_SESSION["verified"]) { // only ukg panel logic past this point
+        return;
+    }
 
     $command = "mosquitto_sub -h CTF-MQTT-Broker -t 'challenges/TrafficLights' -C 1 -W 5"; 
     $currentData = shell_exec($command);
-    $temperature = $currentData ? trim($currentData) : 1; // Default to 1 if no data
+    $temperature = random_int(10, 30); // $currentData ? trim($currentData) : 10; // Default to 10 if no data
     if (!empty($_POST['user_input'])) {
         $_SESSION['user_input'] = (int)$_POST['user_input'];
     } else {
         unset($_SESSION['user_input']);
     }
+
+    $key = ($time * pow(($temperature + $_SESSION["user_input"]), 2)) % 1000000;
+    /* implement with relevant info and review later
+    $stmt = $conn->prepare("UPDATE tablename SET flag = :key WHERE id = 1");
+    $stmt->execute([':key' => $key]);
+    */
 }
 
 $user_input = isset($_SESSION['user_input']) ? (int)$_SESSION['user_input'] : '';
@@ -43,7 +53,7 @@ $user_input = isset($_SESSION['user_input']) ? (int)$_SESSION['user_input'] : ''
     <div class = "container" style = "margin-top: 20vh;">
         <h1 class = "text-center">Single use unique key generator</h1>
         <p class = "text-center">A sudo-random passkey generator for administrative purposes. Keys will automatically terminate prior to use.</p>
-        <p class = "text-center" style = "font-style: italic;">Formula: Key = Time * (Temperature^((Input + 3) % 5) + Input^2) % 10^7</p>
+        <p class = "text-center" style = "font-style: italic;">Formula: Key = (Time * (Temperature + User Input)^2) % 10^6</p>
         <form method = "post">
             <div class = "text-center">
                 <div class = "row" style = "margin-top: 40px;">
@@ -57,7 +67,7 @@ $user_input = isset($_SESSION['user_input']) ? (int)$_SESSION['user_input'] : ''
                     </div>
                     <div class = "col-md-4">
                         <h2>Time of generation</h2>
-                        <p><?php echo date("dHis"); ?></p>
+                        <p><?php echo $time; ?></p>
                     </div>
                 </div>
                 <h2>Generate new key</h2>
