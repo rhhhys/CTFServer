@@ -1,6 +1,7 @@
 <?php
 ob_start();
 require_once "../../includes/template.php";
+require_once __DIR__ . '/../../includes/config.php'; // must define $conn (PDO) and BASE_URL
 
 $temperature = 10; // default
 $message = "";
@@ -35,11 +36,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         unset($_SESSION['user_input']);
     }
 
-    $key = ($time * pow(($temperature + $_SESSION["user_input"]), 2)) % 1000000;
-    /* implement with relevant info and review later
-    $stmt = $conn->prepare("UPDATE tablename SET flag = :key WHERE id = 1");
-    $stmt->execute([':key' => $key]);
-    */
+    $num = ($time * pow(($temperature + $_SESSION["user_input"]), 2)) % 1000000;
+    $key = "CTF{SUDORANDOM" . (string)$num . "}";
+    $stmt = $conn->prepare("UPDATE Challenges SET flag = :key WHERE challengeTitle = :name");
+    $stmt->execute([':key' => $key, ':name' => 'Encryption Hunt']);
 }
 
 $user_input = isset($_SESSION['user_input']) ? (int)$_SESSION['user_input'] : '';
