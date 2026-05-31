@@ -20,11 +20,36 @@ services:
     networks:
       - public
       - private
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mariadb:latest 
+    container_name: CTF-MySQL
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: CTFRootPassw0rd
+      MYSQL_DATABASE: CyberCity
+      MYSQL_USER: CyberCity
+      MYSQL_PASSWORD: Cyb3rC1ty
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./_init_scripts:/docker-entrypoint-initdb.d
+    command: --binlog-format=ROW --log-bin=mysql-bin --server-id=1
+    networks:
+      - private
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: CTF-PHPMyAdmin
     environment:
+      PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: CTFRootPassw0rd
       PMA_PORT: 3306
     ports:
@@ -39,6 +64,8 @@ services:
     working_dir: /app
     ports:
       - "8001:3000"
+    depends_on:
+      - mysql
     volumes:
       - ./_docs:/app
     command: >
