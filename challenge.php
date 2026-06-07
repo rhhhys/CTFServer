@@ -13,6 +13,7 @@
     }
 
     $message = "";
+    $succsess = false;
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST['username'];
         $password = $_POST['password'];
@@ -23,10 +24,11 @@
         $user = $stmt->fetch();
 
         if ($user) {
-            echo $user["Username"];
             $message = "You have successfully logged in. Challenge completed!";
+            $succsess = true;
         } else {
             $message = "Incorrect username or password. Please try again.";
+            $succsess = false;
         }
     }
 ?>
@@ -56,7 +58,7 @@
                     <button type="submit" style = "margin-top: 10px;">Submit</button>
                 </form>
             </div>
-            <p class = "text-center" style = "margin-top: 15px; font-style: italic;"><?php echo $message; ?></p>
+            <p class = "text-center" style = "margin-top: 15px; font-style: italic; color: <?php echo $succsess ? 'green' : 'red'; ?>;"><?php echo $message; ?></p>
         </div>
     </body>
 </html>
