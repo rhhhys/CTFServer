@@ -8,6 +8,8 @@ $train_bool = $_POST["train_stopped"] == "true" ? 0 : 1;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $conn->prepare("UPDATE Challenges SET moduleValue = :val WHERE challengeTitle = :name");
     $stmt->execute([":val" => $train_bool, ":name" => "Train"]);
+    sleep(3);
+    $stmt->execute([":val" => 0, ":name" => "Train"]);
 }
 ?>
 
