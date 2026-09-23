@@ -2,11 +2,11 @@
 ob_start();
 require_once "../../includes/template.php";
 
-$_POST["train_stopped"] = $_POST["train_stopped"] ?? "true";
-$train_bool = $_POST["train_stopped"] == "true" ? 0 : 1;
+$_POST["train_stopped"] = $_POST["train_stopped"] ?? "true"; // defaults to true if value is null
+$train_bool = $_POST["train_stopped"] == "false" ? 1 : 0; // check for "false" specifically so that anything else defaults to 0
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $stmt = $conn->prepare("UPDATE Challenges SET moduleValue = :val WHERE challengeTitle = :name");
+    $stmt = $conn->prepare("UPDATE Challenges SET moduleValue = :val WHERE challengeTitle = :name"); // ignore $conn highlighting. it is defined in template.php
     $stmt->execute([":val" => $train_bool, ":name" => "Train"]);
 }
 ?>

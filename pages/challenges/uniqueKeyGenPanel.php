@@ -14,7 +14,7 @@ if (!isset($_SESSION['verified'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $auth_attempted = true;
     if (!empty($_POST['ukg_password'])) {
-        if ($_POST['ukg_password'] === 'UKGADMIN26') {
+        if (strtoupper($_POST['ukg_password']) === 'UKGADMIN26') {
             $_SESSION['verified'] = true;
         } else {
             $_SESSION['verified'] = false;
@@ -47,7 +47,7 @@ $user_input = isset($_SESSION['user_input']) ? (int)$_SESSION['user_input'] : ''
 <!DOCTYPE html>
 <html lang="en">
 
-<?php if ($_SESSION['verified']): ?>
+<?php if ($_SESSION['verified'] == true): ?>
 <body>
     <div class = "container" style = "margin-top: 20vh;">
         <h1 class = "text-center">Single use unique key generator</h1>
@@ -75,7 +75,7 @@ $user_input = isset($_SESSION['user_input']) ? (int)$_SESSION['user_input'] : ''
         </form>
     </div>
 </body>
-<?php else: ?>
+<?php elseif ($_SESSION['verified'] == false): ?>
 <body>
     <div class = "container" style = "margin-top: 25vh;">
         <h1 class = "text-center">Welcome to the UKG Panel</h1>

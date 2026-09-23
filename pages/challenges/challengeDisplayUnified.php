@@ -28,6 +28,7 @@ $challengeToLoad = $_GET["challengeID"] ?? null;
 $dockerID        = $_GET["dockerID"] ?? null;
 
 $isDockerChallenge = $dockerID !== null && $dockerID !== '' && $dockerID !== '0';
+$moduleValueUpdBlacklist = [165]; // append a challenge id here to prevent its module value from updating upon challenge completion
 
 if (!$challengeToLoad) {
     smart_redirect("challengesList.php");
@@ -114,7 +115,7 @@ function loadChallengeData()
 
 function handleFlagSubmission()
 {
-    global $conn, $challengeID, $flag, $projectID, $pointsValue, $userID, $isDockerChallenge, $selfUrl;
+    global $conn, $challengeID, $flag, $projectID, $pointsValue, $userID, $isDockerChallenge, $selfUrl, $moduleValueUpdBlacklist;
 
     if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["hiddenflag"])) {
         $userEnteredFlag = sanitise_data($_POST['hiddenflag']);
@@ -154,7 +155,9 @@ function handleFlagSubmission()
             $updateScore->execute([$pointsValue, $userID]);
 
             if (!$isDockerChallenge) {
-                $conn->exec("UPDATE Challenges SET moduleValue = 1 WHERE ID=$challengeID");
+                if (!in_array($challengeID, $moduleValueUpdBlacklist)) {
+                    $conn->exec("UPDATE Challenges SET moduleValue = 1 WHERE ID=$challengeID");
+                }
                 set_flash('success', 'Success!');
                 smart_redirect("./challengesList.php?projectID=$projectID");
             } else {
