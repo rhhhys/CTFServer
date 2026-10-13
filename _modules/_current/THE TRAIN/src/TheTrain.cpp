@@ -154,16 +154,12 @@ Serial.println("detected change");
     currentStatus = "STOPPED";
     updateDisplay(currentStatus, "Emergency brake activated");
     step(RED, PWM_BRK, 0);
-    delay(2000);
-    step(RED, PWM_BRK, 0);
   } 
   // "1" = Enable normal mode (accelerate at speed 3)
   else if ((char)payload[0] == '1') {
     Serial.println("ADVANCE");
     currentStatus = "RUNNING";
     updateDisplay(currentStatus, "Speed: Level 3");
-    step(RED, PWM_FWD3, 0);
-    delay(2000);
     step(RED, PWM_FWD3, 0);
   }
 }
