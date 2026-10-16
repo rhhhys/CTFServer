@@ -18,11 +18,11 @@ const char* password        = "CyberRange";       // Wifi Password
 //
 
 // MQTT client name
-const char* mqttClient = "ESP32";
+const char* mqttClient = "Train";
 
 // MQTT Topic
 const char* mqttTopic = "challenges/Train"; // It's worth noting that an ESP32 can subscribe to more than 1 topic
 
 // Replace with the MQTT broker IP address and port (default port for MQTT is 1883)
-const char* mqttServer = "192.168.1.116";  
+const char* mqttServer = "192.168.1.116"; // 192.168.1.116 for the server
 const int mqttPort = 1883;

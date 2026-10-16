@@ -37,6 +37,8 @@ unsigned long currentTime = millis();
 unsigned long previousTime = 0;
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
+// Bool that handles looping state
+bool isTrainLooping = false;
 
 // Single and dual motor control is defined
 void step(uint8_t output, uint8_t pwm, uint16_t time) {
@@ -117,6 +119,25 @@ void updateDisplay(String status, String details = "") {
   }
 }
 
+void sendDataToServer(String topic, String message)
+{
+  // 1. Connection Check: Only proceed if the MQTT client is connected
+  if (client.connected())
+  {
+        // 2. Debug: Print the topic and message to the Serial Monitor
+    Serial.print("Sending message to topic [");
+    Serial.print(topic);
+    Serial.print("]: ");
+    Serial.println(message);
+        // 3. Publishing: Convert Strings to C-strings and send to the broker
+    client.publish(topic.c_str(), message.c_str());
+  }
+  else
+  {
+    Serial.println("Send failed: MQTT not connected.");
+  }
+}
+
 void performActionBasedOnPayload(byte *payload)
 {
   // Implement your action logic here based on the payload
@@ -145,22 +166,33 @@ void performActionBasedOnPayload(byte *payload)
     digitalWrite(redLEDPin, LOW);
   }
   */
-Serial.println("detected change");
+
+  // halts any further status changes as soon as train begins looping
+  if (isTrainLooping) {
+    Serial.println("Action was prompted but ignored since train is beginning a loop");
+    return;
+  }
+
+  Serial.println("detected change");
 
   // Process commands:
   // "0" = Enable stop mode (brakes on)
   if ((char)payload[0] == '0') {
-    Serial.println("HALT");
+    Serial.println("STOPPING");
     currentStatus = "STOPPED";
-    updateDisplay(currentStatus, "Emergency brake activated");
+    updateDisplay(currentStatus, "The train is stopping/stationary");
     step(RED, PWM_BRK, 0);
   } 
   // "1" = Enable normal mode (accelerate at speed 3)
   else if ((char)payload[0] == '1') {
     Serial.println("ADVANCE");
     currentStatus = "RUNNING";
-    updateDisplay(currentStatus, "Speed: Level 3");
+    updateDisplay(currentStatus, "The train is currently completing a loop at speed level 3");
     step(RED, PWM_FWD3, 0);
+    isTrainLooping = true;
+    delay(3000); // breif delay so train can move out of range before stop signal begins sending
+    isTrainLooping = false;
+    sendDataToServer("updateChallenges/" + String(mqttClient), "0");
   }
 }
 
