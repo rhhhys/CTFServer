@@ -37,8 +37,8 @@ unsigned long currentTime = millis();
 unsigned long previousTime = 0;
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
-// Bool that handles looping state
-bool isTrainLooping = false;
+// Records the timestamp of when the train begins a loop
+unsigned long loopStartTime = millis();
 
 // Single and dual motor control is defined
 void step(uint8_t output, uint8_t pwm, uint16_t time) {
@@ -167,32 +167,30 @@ void performActionBasedOnPayload(byte *payload)
   }
   */
 
-  // halts any further status changes as soon as train begins looping
-  if (isTrainLooping) {
-    Serial.println("Action was prompted but ignored since train is beginning a loop");
-    return;
-  }
-
   Serial.println("detected change");
 
   // Process commands:
   // "0" = Enable stop mode (brakes on)
   if ((char)payload[0] == '0') {
+    // avoids delaying thread and does not rely on messages arriving at consistent intervals
+    Serial.println("It has been " + String((millis() - loopStartTime)) + "ms since train began looping");
+    if (millis() - loopStartTime < 10000) { // measures time elapsed since the train last began looping
+      Serial.println("Stop ignored.");
+      return;
+    }
     Serial.println("STOPPING");
     currentStatus = "STOPPED";
-    updateDisplay(currentStatus, "The train is stopping/stationary");
     step(RED, PWM_BRK, 0);
+    updateDisplay(currentStatus, "The train is stopping/stationary");
   } 
   // "1" = Enable normal mode (accelerate at speed 3)
   else if ((char)payload[0] == '1') {
     Serial.println("ADVANCE");
-    currentStatus = "RUNNING";
-    updateDisplay(currentStatus, "The train is currently completing a loop at speed level 3");
-    step(RED, PWM_FWD3, 0);
-    isTrainLooping = true;
-    delay(3000); // breif delay so train can move out of range before stop signal begins sending
-    isTrainLooping = false;
     sendDataToServer("updateChallenges/" + String(mqttClient), "0");
+    currentStatus = "RUNNING";
+    step(RED, PWM_FWD3, 0);
+    loopStartTime = millis();
+    updateDisplay(currentStatus, "The train is currently completing a loop at speed level 3");
   }
 }
 
