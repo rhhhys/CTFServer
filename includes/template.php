@@ -106,13 +106,9 @@ $flash = take_flash();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber City Arena</title>
+    <!-- <title>Cyber City Arena</title> -->
 
-    <script type="text/javascript">
-        function doUnauthRedirect() {
-            location.replace("http://10.177.200.71/index.html");
-        }
-    </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- Google Fonts Connection & Embed for Monospace Only -->
@@ -529,6 +525,8 @@ $flash = take_flash();
             border: 2px solid #ffffff !important;
             font-weight: bold !important;
         }
+
+        
     </style>
 </head>
 
@@ -559,7 +557,7 @@ $flash = take_flash();
                             <li><h6 class="dropdown-header text-uppercase"><i class="bi bi-cpu-fill me-2"></i>Virtual Nodes</h6></li>
                             <?php
                             try {
-                                $stmt = $conn->query("SELECT project_id, project_name FROM CyberCity.Projects");
+                                $stmt = $conn->query("SELECT project_id, project_name FROM CyberCity.Projects WHERE enabled=1");
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     echo '<li><a class="dropdown-item rounded" href="' . BASE_URL . 'pages/challenges/challengesList.php?projectID=' . $row['project_id'] . '"><i class="bi bi-chevron-right text-muted"></i> ' . htmlspecialchars($row['project_name']) . '</a></li>';
                                 }
@@ -567,10 +565,10 @@ $flash = take_flash();
                                 echo '<li><span class="dropdown-item text-danger small"><i class="bi bi-exclamation-triangle"></i> Error loading projects</span></li>';
                             }
                             ?>
-                            <li>
+                            <!-- <li>
                                 <hr class="dropdown-divider">
-                            </li>
-                            <li><a href="http://10.177.202.196/CyberCityDocs/welcome.html" class="dropdown-item rounded" target="_blank"><i class="bi bi-journal-code me-2"></i>Welcome Guide</a></li>
+                            </li> -->
+                            <!-- <li><a href="http://10.177.202.196/CyberCityDocs/welcome.html" class="dropdown-item rounded" target="_blank"><i class="bi bi-journal-code me-2"></i>Welcome Guide</a></li> -->
                         </ul>
                     </li>
 
@@ -583,7 +581,7 @@ $flash = take_flash();
 
                     <!-- Tech Docs with Book stack icon -->
                     <li class="nav-item cc-nav-item">
-                        <a href="//<?= $_SERVER['SERVER_NAME'] ?>:8001" class="nav-link px-3 cc-nav-link" target="_blank">
+                        <a href="//<?= $_SERVER['SERVER_NAME'] ?>:1082/#/index.html" class="nav-link px-3 cc-nav-link" target="_blank">
                             <i class="bi bi-book-half text-primary"></i> Docs
                         </a>
                     </li>
@@ -626,7 +624,7 @@ $flash = take_flash();
                             <li class="mt-2">
                                 <small class="text-muted fw-bold text-uppercase d-block mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;"><i class="bi bi-palette me-1"></i> Environment Controls</small>
                                 <button id="modeToggle" class="btn btn-sm btn-dark w-100 mb-2 py-1.5 fw-bold"><i class="bi bi-moon-stars me-1"></i> Toggle Dark Mode</button>
-                                <button id="toggleContrast" class="btn btn-sm btn-outline-dark w-100 py-1.5 fw-bold"><i class="bi bi-eye me-1"></i> High Contrast</button>
+                                <button id="toggleContrast" class="btn btn-sm btn-dark w-100 mb-2 py-1.5 fw-bold"><i class="bi bi-moon-stars me-1"></i> High Contrast</button>
                             </li>
                         </ul>
                     </li>

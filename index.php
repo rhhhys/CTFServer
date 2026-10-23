@@ -5,7 +5,7 @@
 
 <div class="container mb-4">
 
-<div class="container-fluid bg-body-tertiary py-5 mb-4 border-bottom">
+<div class="container-fluid home-hero py-5 mb-4 border-bottom">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">
@@ -18,7 +18,7 @@
                         <i class="bi bi-person-check-fill"></i> ACTIVE CONNECTION: <?php echo htmlspecialchars($_SESSION["username"]); ?>
                     </div>
                     <p class="lead">The mainframe is open. Your contribution to the resistance is vital.</p>
-                    <a href="pages/challenges/challengesList.php?projectID=2025" class="btn btn-primary btn-lg mt-2">Enter the City</a>
+                    <a href="pages/challenges/challengesList.php?projectID=2026" class="btn btn-primary btn-lg mt-2">Enter the City</a>
                 <?php else: ?>
                     <div class="badge rounded-pill text-bg-warning mb-3 p-2 px-3">
                         <i class="bi bi-shield-lock-fill"></i> ENCRYPTED ACCESS ONLY
@@ -37,7 +37,7 @@
 <div class="container mb-5">
     <div class="row g-4 text-start">
         <div class="col-md-6">
-            <div class="card h-100 shadow-sm border-0 bg-body-secondary">
+            <div class="card home-card h-100 shadow-sm border-0">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-3">
                         <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">1</div>
@@ -51,7 +51,7 @@
         </div>
 
         <div class="col-md-6">
-            <div class="card h-100 shadow-sm border-0 bg-body-secondary">
+            <div class="card home-card h-100 shadow-sm border-0">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-3">
                         <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">2</div>

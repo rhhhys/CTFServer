@@ -91,7 +91,7 @@ const unsigned long updateInterval = 5000; // Time between random number updates
 */
 
 /*
-  STEP 3.
+  STEP 3.watch -n 1 'ip -s link show wlan0'
   PROGRAM THE callback() FUNCTION TO USE THE WIRED UP COMPONENTS AS DESIRED.
 
   callback() is below.
@@ -110,7 +110,7 @@ void performActionBasedOnPayload(byte *payload)
     Serial.println("LED ON");
     digitalWrite(redLEDPin, HIGH);
   } else {
-    Serial.println("LED OFF");
+    Serial.println("LED OFF");192.168.1.102
     digitalWrite(redLEDPin, LOW);
   }
 
@@ -139,6 +139,7 @@ void performActionBasedOnPayload(byte *payload)
 void callback(char *topic, byte *payload, unsigned int length)
 {
   Serial.print("Message arrived [");
+  Serial.println(WiFi.localIP());
   Serial.print(topic);
   Serial.print("] ");
   for (int i = 0; i < length; i++)
